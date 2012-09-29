@@ -13,9 +13,9 @@ using libogg and libvorbis for .NET languages such as C#, VB.net.
 You can retrieve PCM waveform from vorbis streams *on memory* or *packed files*.  
 
 ゲームのBGM用にOggのデコーダが欲しいじゃない？  
-libogg.dllとかlibvorbis.dllとかvorbisfile.dllとかやだし、**DLL 1個**がいいなー。
-それ以上でも以下でもない、シンプルなライブラリ。
-参照設定に追加して、お好みでWaveデコードしてください。もちろん再配布可(ライセンス見てね)  
+libogg.dllとかlibvorbis.dllとかvorbisfile.dllとかやだし、**DLL 1個**がいいなー。  
+それ以上でも以下でもない、シンプルなライブラリ。  
+参照設定に追加して、お好みでWaveデコードしてください。もちろん再配布可(ライセンス見てね)    
 
 ## 使い方 / How to use?
 
