@@ -1,43 +1,43 @@
 Ogg Vorbis Decoder DLL for .NET
 ===============================
 
-.NETからOggVorbisデコードするDLL
-    by つーさ <http://tu3.jp/>
+.NETからOggVorbisデコードするDLL  
+    by つーさ <http://tu3.jp/>  
 
 ## なにこれ？ / Abstract
-C#などの.NET言語からOggVorbisをデコードするライブラリです。
-ストリームを渡せるので、暗号化ファイルやメモリ上のファイルなどに対応可能。
+C#などの.NET言語からOggVorbisをデコードするライブラリです。  
+ストリームを渡せるので、暗号化ファイルやメモリ上のファイルなどに対応可能。  
 
-This is an all-in-one library decodes vorbis streams
-using libogg and libvorbis for .NET languages such as C#, VB.net.
-You can retrieve PCM waveform from vorbis streams *on memory* or *packed files*.
+This is an all-in-one library decodes vorbis streams  
+using libogg and libvorbis for .NET languages such as C#, VB.net.  
+You can retrieve PCM waveform from vorbis streams *on memory* or *packed files*.  
 
 ## 使い方 / How to use?
 
-こんな感じ。
+こんな感じ。  
 Like this?  
 
-var s = new Tsukikage.Audio.OggDecodeStream(File.OpenRead("hoge.ogg")); 
-while (true) {  
-    byte[] buffer = new buffer[65536];  
-    int read = s.Read(buffer, 0, buffer.Length);  
-    if (read == 0) break;
-    WaveOut.Write(buffer, 0, read);  
-}  
-
-
+```sample.cs
+var buffer = new buffer[65536];
+using (var stream = new Tsukikage.Audio.OggDecodeStream(File.OpenRead("hoge.ogg")))
+    while (true) {
+        int read = stream.Read(buffer, 0, buffer.Length);
+        if (read == 0) break;
+        WaveOut.Write(buffer, 0, read);
+    }
+```
 サンプルアプリケーション見てね！  
-See also SampleApplication!  
+See SampleApplication!  
 
 ## ライセンス / Licence 
 
 BSD like Licence. 
 
-詳細は COPYING.txt を見てください。
-See COPYING text.  
+詳細は [COPYING.txt](https://github.com/ttsuki/OggVorbis.NET/blob/master/COPYING.txt) を見てください。  
+See [COPYING.txt](https://github.com/ttsuki/OggVorbis.NET/blob/master/COPYING.txt).  
 
 COPYINGには大まかに次のようなことが書いてありますので参考にしてください。  
-To put it simply, COPYING text says... (in Japanese)  
+To put it simply, COPYING.txt says... (in Japanese)  
 
 - 本ソフトウェアは次の条件に沿う限り、自由に再配布を行うことができます。
 - ソースでも実行形式でも、再配布の際はこの文章を配布物の中に含めてください。
