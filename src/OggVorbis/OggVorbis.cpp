@@ -102,10 +102,11 @@ long long OggDecodeStream::Seek (long long offset, System::IO::SeekOrigin origin
 	CheckAlive();
 	pin_ptr<Stream^> stream = &baseStream;
 	pvf->datasource = stream;
+	int curPos = static_cast<int>(ov_pcm_tell(pvf) * 2 * Channels);
 
 	switch(origin) {
 		case System::IO::SeekOrigin::Begin: break;
-		case System::IO::SeekOrigin::Current: offset += Position; break;
+		case System::IO::SeekOrigin::Current: offset += curPos; break;
 		case System::IO::SeekOrigin::End: offset = Length + offset; break;
 	}
 
@@ -127,7 +128,6 @@ int OggDecodeStream::internalRead(byte* buffer, int offset, int count) {
 		if (sz < 0) throw gcnew IOException("ov_read fail ["+sz+"]");
 		total += sz;
 	}
-	pvf->datasource = 0;
 	return total;
 }
 
@@ -139,16 +139,19 @@ int OggDecodeStream::Read (array<byte>^ buffer, int offset, int count) {
 
 	pin_ptr<unsigned char> bufferPinned = &buffer[0];
 	unsigned char *bufferDest = bufferPinned;
-
-	if (!autoRepeat || Position >= loopFromBytes)
+	
+	int curPos = static_cast<int>(ov_pcm_tell(pvf) * 2 * Channels);
+	if (!autoRepeat || curPos >= loopFromBytes)
 		return internalRead(bufferPinned, offset, count);
 
 	int total = 0;
+
 	while (true) {
-		int nextRead = min(count - total, loopFromBytes - static_cast<int>(Position));
+		int curPos = static_cast<int>(ov_pcm_tell(pvf) * 2 * Channels);
+		int nextRead = min(count - total, loopFromBytes - curPos);
 		int sz = internalRead(bufferPinned, offset + total, nextRead);
 		total += sz;
-		if (Position == loopFromBytes) ov_pcm_seek(pvf, loopToSamples);
+		if (curPos + sz == loopFromBytes) ov_pcm_seek(pvf, loopToSamples);
 		if (sz == 0 || total == count) break;
 	}
 	pvf->datasource = 0;
