@@ -1,7 +1,5 @@
 // これは メイン DLL ファイルです。
 
-#include "stdafx.h"
-
 #include "OggVorbis.h"
 
 namespace Tsukikage{
@@ -31,9 +29,9 @@ static int seek(void *datasource, ogg_int64_t offset, int whence) {
 	Stream^ stream = *(static_cast<Stream^ *>(datasource));
 	try {
 		switch (whence) {
-			case SEEK_SET: stream->Seek(offset, SeekOrigin::Begin); break;
-			case SEEK_END: stream->Seek(offset, SeekOrigin::End); break;
-			case SEEK_CUR: stream->Seek(offset, SeekOrigin::Current); break;
+			case SEEK_SET: stream->Seek(offset, System::IO::SeekOrigin::Begin); break;
+			case SEEK_END: stream->Seek(offset, System::IO::SeekOrigin::End); break;
+			case SEEK_CUR: stream->Seek(offset, System::IO::SeekOrigin::Current); break;
 			default: return -1;
 		}
 	} catch (...) {
@@ -84,8 +82,6 @@ OggDecodeStream::OggDecodeStream(Stream^ oggVorbisStream, int loopStartSampleInd
 }
 
 OggDecodeStream::~OggDecodeStream() {
-	if (disposed) return;
-	disposed = true;
 	Close();
 }
 
@@ -102,22 +98,24 @@ bool OggDecodeStream::CanSeek::get() {
 }
 
 
-long long OggDecodeStream::Seek (long long offset, SeekOrigin origin) {
+long long OggDecodeStream::Seek (long long offset, System::IO::SeekOrigin origin) {
 	CheckAlive();
 	pin_ptr<Stream^> stream = &baseStream;
 	pvf->datasource = stream;
 
 	switch(origin) {
-		case SeekOrigin::Begin: break;
-		case SeekOrigin::Current: offset += Position; break;
-		case SeekOrigin::End: offset = Length + offset; break;
+		case System::IO::SeekOrigin::Begin: break;
+		case System::IO::SeekOrigin::Current: offset += Position; break;
+		case System::IO::SeekOrigin::End: offset = Length + offset; break;
 	}
 
 	// Byte -> Sample
 	offset /= 2*Channels;
 
 	if (ov_pcm_seek(pvf, offset))
-		throw gcnew IOException("シークに失敗しました");
+		throw gcnew IOException("ov_pcm_seek fail.");
+
+	pvf->datasource = 0;
 	return Position;
 }
 
@@ -126,9 +124,10 @@ int OggDecodeStream::internalRead(byte* buffer, int offset, int count) {
 	while(total < count) {
 		int sz = ov_read(pvf, reinterpret_cast<char*>(buffer) + offset + total, count - total, 0, 2, 1, NULL);
 		if (sz == 0) break;
-		if (sz < 0) throw gcnew IOException("ov_read 失敗["+sz+"]");
+		if (sz < 0) throw gcnew IOException("ov_read fail ["+sz+"]");
 		total += sz;
 	}
+	pvf->datasource = 0;
 	return total;
 }
 
@@ -152,6 +151,7 @@ int OggDecodeStream::Read (array<byte>^ buffer, int offset, int count) {
 		if (Position == loopFromBytes) ov_pcm_seek(pvf, loopToSamples);
 		if (sz == 0 || total == count) break;
 	}
+	pvf->datasource = 0;
 	return total;
 }
 
@@ -171,13 +171,15 @@ void OggDecodeStream::Close() {
 	if (disposed) return;
 	disposed = true;
 
-	pin_ptr<Stream^> stream = &baseStream;
-	pvf->datasource = stream;
-	ov_clear(pvf);
+	if (pvf) {
+		pin_ptr<Stream^> stream = &baseStream;
+		pvf->datasource = stream;
+		ov_clear(pvf);
 
-	baseStream->Close();
-	delete pvf;
-	GC::SuppressFinalize(this);
+		baseStream->Close();
+		delete pvf;
+		pvf = 0;
+	}
 }
 
 long long OggDecodeStream::Length::get() {
@@ -189,20 +191,23 @@ long long OggDecodeStream::Position::get() {
 	CheckAlive();
 	pin_ptr<Stream^> stream = &baseStream;
 	pvf->datasource = stream;
-	return ov_pcm_tell(pvf) * 2 * Channels;
+	long long pos = ov_pcm_tell(pvf) * 2 * Channels;
+	pvf->datasource = 0;
+	return pos;
+
 }
 void OggDecodeStream::Position::set (long long value) {
-	Seek(value, SeekOrigin::Begin);
+	Seek(value, System::IO::SeekOrigin::Begin);
 }
 
 int OggDecodeStream::SamplesPerSecond::get() {
 	CheckAlive();
-	return v_info->rate;
+	return samplePerSec;
 }
 
 int OggDecodeStream::Channels::get() {
 	CheckAlive();
-	return v_info->channels;
+	return channels;
 }
 
 int OggDecodeStream::BitsPerSample::get() {
@@ -224,18 +229,23 @@ void OggDecodeStream::init(Stream^ oggStream)
 	callbacks.tell_func = tell;
 
 	if (ov_open_callbacks(ptr, pvf, NULL, 0, callbacks) != 0)
-		throw gcnew ArgumentException("OggVorbisデコーダの初期化に失敗。入力ソースおかしいかも。");
+		throw gcnew ArgumentException("ov_open_callbacks failed. Is oggStream truly vorbis stream? - OggVorbisデコーダの初期化に失敗。入力ソースおかしいかも。");
+	
 	if (ov_seekable(pvf) == 0)
-		throw gcnew ArgumentException("今のところ、シーク可能なストリームに対してのみ対応。");
+		throw gcnew ArgumentException("oggStream must be seekable. - シーク可能なストリームに対してのみ対応。");
 
-	v_info = ov_info(pvf, -1);
-	pcmStreamLength = ov_pcm_total(pvf, -1) * 2 * Channels;
+	vorbis_info *v_info = ov_info(pvf, -1);
+	samplePerSec = v_info->rate;
+	channels = v_info->channels;
+	pcmStreamLength = ov_pcm_total(pvf, -1) * 2 * channels;
+	pvf->datasource = 0;
 }
 
 void OggDecodeStream::CheckAlive()
 {
 	if (disposed)
-		throw gcnew ObjectDisposedException("閉じたストリームにアクセスすることはできません。");
+		throw gcnew ObjectDisposedException("Stream has been disposed. - ストリームはすでに閉じられています。");
 }
 }
 }
+

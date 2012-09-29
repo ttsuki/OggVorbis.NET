@@ -18,7 +18,7 @@ namespace Audio {
 public ref class OggDecodeStream : Stream {
 
 	public:
-        ///<summary>OggVorbisデコーダを初期化します。</summary>
+        ///<summary>OggVorbis デコーダを初期化します。</summary>
         ///<param name="oggVorbisStream">デコード対象のOggVorbis形式のデータが入ったストリーム。OggDecodeStreamが閉じられるとこのストリームも閉じられます。</param>
         OggDecodeStream(Stream^ oggVorbisStream);
 
@@ -63,7 +63,7 @@ public ref class OggDecodeStream : Stream {
         }
 
         ///<summary>ストリーム位置をPCMの"バイト単位"で設定します。</summary>
-        virtual long long Seek (long long offset, SeekOrigin origin) override;
+        virtual long long Seek (long long offset, System::IO::SeekOrigin origin) override;
 
 		///<summary>指定したバイト数分のPCMをデコードします。</summary>
         ///<param name="buffer">デコード先のバッファ</param>
@@ -109,6 +109,8 @@ public ref class OggDecodeStream : Stream {
         bool autoRepeat; ///< 自動リピート
         int loopToSamples; ///< リピート開始地点
 		int loopFromBytes; ///< リピート終了地点
+		int samplePerSec;
+		int channels;
 
         void init(Stream^ oggStream); ///< 初期化
         void CheckAlive(); ///< Disposedチェック

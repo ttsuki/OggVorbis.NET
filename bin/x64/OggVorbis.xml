@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        "OggVorbis"
+    </assembly>
+    <members>
+        <member name="P:Tsukikage.Audio.OggDecodeStream.BitsPerSample">
+            <summary>デコードされるPCMの量子化ビット数</summary>
+        </member>
+        <member name="P:Tsukikage.Audio.OggDecodeStream.Channels">
+            <summary>デコードされるPCMのチャンネル数</summary>
+        </member>
+        <member name="P:Tsukikage.Audio.OggDecodeStream.SamplesPerSecond">
+            <summary>デコードされるPCMの再生周波数</summary>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.Close">
+            <summary>終了処理を行い、使用されているすべてのリソースを解放します</summary>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.SetLength(System.Int64)">
+            <summary>対応していません</summary>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.Flush">
+            <summary>対応していません</summary>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>対応していません</summary>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>指定したバイト数分のPCMをデコードします。</summary>
+            <param name="buffer">デコード先のバッファ</param>
+            <param name="offset">PCMの格納開始位置を示すbuffer内のバイトオフセット</param>
+            <param name="count">デコードする最大バイト数</param>
+            <returns>デコードされたPCMのバイト数</returns>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>ストリーム位置をPCMの"バイト単位"で設定します。</summary>
+        </member>
+        <member name="P:Tsukikage.Audio.OggDecodeStream.Position">
+            <summary>ストリーム位置をPCMの"バイト単位"で取得・設定します。</summary>
+        </member>
+        <member name="P:Tsukikage.Audio.OggDecodeStream.Length">
+            <summary>PCM全体の長さを"バイト単位"で取得します。</summary>
+        </member>
+        <member name="P:Tsukikage.Audio.OggDecodeStream.CanSeek">
+            <summary>シークもできると思います。trueが返ります。</summary>
+        </member>
+        <member name="P:Tsukikage.Audio.OggDecodeStream.CanWrite">
+            <summary>書き込めません。falseが返ります。</summary>
+        </member>
+        <member name="P:Tsukikage.Audio.OggDecodeStream.CanRead">
+            <summary>読めるはずです。trueが返ります。</summary>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.Dispose">
+            <summary>終了処理を行い、使用されているすべてのリソースを解放します</summary>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.#ctor(System.IO.Stream,System.Int32,System.Int32)">
+            <summary>自動ループ機能付きでOggVorbisデコーダを初期化します。</summary>
+            <param name="oggVorbisStream">デコード対象のOggVorbis形式のデータが入ったストリーム。OggDecodeStreamが閉じられるとこのストリームも閉じられます。</param>
+            <param name="loopStartSampleIndex">ループ開始位置を先頭からの"サンプル数"で指定する。この引数を付けてコンストラクタを呼び出すと、Read()メソッドが自動的にループするようになります。BGMの再生なんかには便利です。</param>
+            <param name="loopEndSampleIndex">ループ終了位置を先頭からの"サンプル数"で指定する。この引数を付けてコンストラクタを呼び出すと、Read()メソッドが自動的にループするようになります。BGMの再生なんかには便利です。</param>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.#ctor(System.IO.Stream,System.Int32)">
+            <summary>自動ループ機能付きでOggVorbisデコーダを初期化します。</summary>
+            <param name="oggVorbisStream">デコード対象のOggVorbis形式のデータが入ったストリーム。OggDecodeStreamが閉じられるとこのストリームも閉じられます。</param>
+            <param name="loopStartSampleIndex">ループ開始位置を先頭からの"サンプル数"で指定する。この引数を付けてコンストラクタを呼び出すと、Read()メソッドが自動的にループするようになります。BGMの再生なんかには便利です。</param>
+        </member>
+        <member name="M:Tsukikage.Audio.OggDecodeStream.#ctor(System.IO.Stream)">
+            <summary>OggVorbis デコーダを初期化します。</summary>
+            <param name="oggVorbisStream">デコード対象のOggVorbis形式のデータが入ったストリーム。OggDecodeStreamが閉じられるとこのストリームも閉じられます。</param>
+        </member>
+        <member name="T:Tsukikage.Audio.OggDecodeStream">
+            <summary>OggVorbisをデコードするStream</summary>
+        </member>
+    </members>
+</doc>
