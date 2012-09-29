@@ -1,20 +1,25 @@
-Ogg Vorbis Decoder DLL for .NET
+﻿Ogg Vorbis Decoder DLL for .NET
 ===============================
 
-.NET����OggVorbis�f�R�[�h����DLL  
-    by �[�� <http://tu3.jp/>  
+.NETからOggVorbisデコードするDLL  
+    by つーさ <http://tu3.jp/>  
 
-## �Ȃɂ���H / Abstract
-C#�Ȃǂ�.NET���ꂩ��OggVorbis���f�R�[�h���郉�C�u�����ł��B  
-�X�g���[����n����̂ŁA�Í����t�@�C���⃁������̃t�@�C���ȂǂɑΉ��\�B  
+## なにこれ？ / Abstract
+C#などの.NET言語からOggVorbisをデコードするライブラリです。  
+ストリームを渡せるので、暗号化ファイルやメモリ上のファイルなどに対応可能。  
 
 This is an all-in-one library decodes vorbis streams  
 using libogg and libvorbis for .NET languages such as C#, VB.net.  
 You can retrieve PCM waveform from vorbis streams *on memory* or *packed files*.  
 
-## �g���� / How to use?
+ゲームのBGM用にOggのデコーダが欲しいじゃない？  
+libogg.dllとかlibvorbis.dllとかvorbisfile.dllとかやだし、**DLL 1個**がいいなー。
+それ以上でも以下でもない、シンプルなライブラリ。
+参照設定に追加して、お好みでWaveデコードしてください。もちろん再配布可(ライセンス見てね)  
 
-����Ȋ����B  
+## 使い方 / How to use?
+
+こんな感じ。  
 Like this?  
 
 ```sample.cs
@@ -26,24 +31,24 @@ using (var stream = new Tsukikage.Audio.OggDecodeStream(File.OpenRead("hoge.ogg"
         WaveOut.Write(buffer, 0, read);
     }
 ```
-�T���v���A�v���P�[�V�������ĂˁI  
+サンプルアプリケーション見てね！  
 See SampleApplication!  
 
-## ���C�Z���X / Licence 
+## ライセンス / Licence 
 
 BSD like Licence. 
 
-�ڍׂ� [COPYING.txt](https://github.com/ttsuki/OggVorbis.NET/blob/master/COPYING.txt) �����Ă��������B  
+詳細は [COPYING.txt](https://github.com/ttsuki/OggVorbis.NET/blob/master/COPYING.txt) を見てください。  
 See [COPYING.txt](https://github.com/ttsuki/OggVorbis.NET/blob/master/COPYING.txt).  
 
-COPYING�ɂ͑�܂��Ɏ��̂悤�Ȃ��Ƃ������Ă���܂��̂ŎQ�l�ɂ��Ă��������B  
+COPYINGには大まかに次のようなことが書いてありますので参考にしてください。  
 To put it simply, COPYING.txt says... (in Japanese)  
 
-- �{�\�t�g�E�F�A�͎��̏����ɉ�������A���R�ɍĔz�z���s�����Ƃ��ł��܂��B
-- �\�[�X�ł����s�`���ł��A�Ĕz�z�̍ۂ͂��̕��͂�z�z���̒��Ɋ܂߂Ă��������B
-- ���Ȃ��̐��i�𕁋y������ړI�ŁA����Ɏ������̖��O���g��Ȃ��ł��������B
-- �{�\�t�g�E�F�A�́u����̂܂܁v�Œ񋟂���܂��B�i���̕ۏ؂͈�؍s���܂���B
-- �����Ȃ�ꍇ�ł��A�{�\�t�g�E�F�A�̂ɂ���Ĕ����������ׂĂ̑��Q�ɂ��āA  
-�{�\�t�g�E�F�A�̍�҂͈�؂̔����ӔC�𕉂�Ȃ����̂Ƃ��܂��B
+- 本ソフトウェアは次の条件に沿う限り、自由に再配布を行うことができます。
+- ソースでも実行形式でも、再配布の際はこの文章を配布物の中に含めてください。
+- あなたの製品を普及させる目的で、勝手に私たちの名前を使わないでください。
+- 本ソフトウェアは「現状のまま」で提供されます。品質の保証は一切行われません。
+- いかなる場合でも、本ソフトウェアのによって発生したすべての損害について、  
+本ソフトウェアの作者は一切の賠償責任を負わないものとします。
 
 
