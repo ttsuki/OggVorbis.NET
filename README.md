@@ -20,7 +20,7 @@ libogg.dllとかlibvorbis.dllとかvorbisfile.dllとかやだし、**DLL 1個**�
 ## 使い方 / How to use?
 
 こんな感じ。  
-Like this?  
+Like this...  
 
 ```sample.cs
 var buffer = new buffer[65536];
@@ -31,8 +31,8 @@ using (var stream = new Tsukikage.Audio.OggDecodeStream(File.OpenRead("hoge.ogg"
         WaveOut.Write(buffer, 0, read);
     }
 ```
-サンプルアプリケーション見てね！  
-See SampleApplication!  
+サンプルアプリケーションを見てください。  
+Please see the SampleApplication.  
 
 ## ライセンス / Licence 
 
