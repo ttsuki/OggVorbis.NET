@@ -68,11 +68,10 @@ OggDecodeStream::OggDecodeStream(Stream^ oggVorbisStream) {
 
 OggDecodeStream::OggDecodeStream(Stream^ oggVorbisStream, int loopStartSampleIndex) {
 	init(oggVorbisStream);
-	this->autoRepeat = false;
+	this->autoRepeat = true;
 	this->loopToSamples = loopStartSampleIndex;
 	this->loopFromBytes = static_cast<int>(pcmStreamLength);
 }
-
 
 OggDecodeStream::OggDecodeStream(Stream^ oggVorbisStream, int loopStartSampleIndex, int loopEndSampleIndex) {
 	this->init(oggVorbisStream);
